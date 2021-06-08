@@ -1,6 +1,7 @@
 names = {}
 functions = {}
 
+
 def evalExpr(t):
     if type(t) is not tuple:
         if type(t) is int or type(t) is float:
@@ -48,6 +49,36 @@ def evalInst(t):
         eval_for(t)
     elif t[0] == 'while':
         eval_while(t)
+    elif t[0] == 'function':
+        functions[t[1]] = (t[2], t[3])
+    elif t[0] == 'call':
+        eval_call_function(t)
+
+
+def eval_call_function(t):
+    function = functions[t[1]][0]
+    function_params = functions[t[1]][1]
+    function_params_size = 0
+    tmp = function_params
+    while tmp[0] == 'param':
+        function_params_size += 1
+        tmp = tmp[1]
+
+    call_params = t[2]
+    call_params_size = 0
+    tmp = call_params
+    while tmp[0] == 'param':
+        call_params_size += 1
+        tmp = tmp[1]
+
+    if function_params_size != call_params_size:
+        raise ValueError("Function call don't have right amount of parameters", function_params_size, call_params_size)
+
+    while call_params[0] == 'param':
+        names[function_params[2]] = evalExpr(call_params[2])
+        call_params = call_params[1]
+        function_params = function_params[1]
+    evalInst(function)
 
 
 def eval_bloc(t):

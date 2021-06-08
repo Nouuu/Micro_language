@@ -18,7 +18,7 @@ tokens = [
              'PLUS', 'TIMES', 'DIVIDE',
              'PLUSPLUS', 'PLUSEQUAL', 'MINUSMINUS', 'MINUSEQUAL',
              'LPAREN', 'RPAREN', 'LACO', 'RACO',
-             'AND', 'OR', "EQUALS", "NAME", "SEMI",
+             'AND', 'OR', "EQUALS", "NAME", "SEMI", "COMA",
              "GREATER", "LOWER", "ISEQUAL"
          ] + list(reserved.values())
 
@@ -39,6 +39,7 @@ t_RACO = r'\}'
 t_AND = r'&'
 t_OR = r'\|'
 t_SEMI = r';'
+t_COMA = r','
 t_EQUALS = r'='
 t_GREATER = r'>'
 t_LOWER = r'<'
@@ -110,12 +111,12 @@ def p_statement_assign(p):
 
 def p_statement_print(p):
     """statement : PRINT LPAREN expression RPAREN SEMI"""
-    p[0] = ('print', p[3])
+    p[0] = ('print', p[3], 'empty')
 
 
 def p_statement_print_string(p):
     r"""statement : PRINTSTRING LPAREN STRING RPAREN SEMI"""
-    p[0] = ('printString', p[3].strip("\""))
+    p[0] = ('printString', p[3].strip("\""), 'empty')
 
 
 def p_expression_binop(p):
@@ -134,6 +135,42 @@ def p_expression_binop(p):
 def p_condition(p):
     """statement : IF expression THEN LACO bloc RACO"""
     p[0] = ('if', p[2], p[4])
+
+
+def p_parameters(p):
+    """parameters : NAME
+    | NAME COMA parameters"""
+    if len(p) == 2:
+        p[0] = ('param', 'empty', p[1])
+    else:
+        p[0] = ('param', p[3], p[1])
+
+
+def p_expressions(p):
+    """expressions : expression
+    | expression COMA expressions"""
+    if len(p) == 2:
+        p[0] = ('param', 'empty', p[1])
+    else:
+        p[0] = ('param', p[3], p[1])
+
+
+def p_function(p):
+    """statement : FUNCTION NAME LPAREN parameters RPAREN LACO bloc RACO
+    | FUNCTION NAME LPAREN RPAREN LACO bloc RACO"""
+    if len(p) == 8:
+        p[0] = ('function', p[2], p[6], 'empty')
+    else:
+        p[0] = ('function', p[2], p[7], p[4])
+
+
+def p_call_function(p):
+    """statement : NAME LPAREN expressions RPAREN SEMI
+    | NAME LPAREN RPAREN SEMI"""
+    if len(p) == 5:
+        p[0] = ('call', p[1], 'empty')
+    else:
+        p[0] = ('call', p[1], p[3])
 
 
 def p_loop_for(p):
@@ -191,17 +228,19 @@ yacc.yacc()
 
 # s = input('calc > ')
 s = '''
-first=0;
-second=1;
-i=10;
-while i> 0 {
-    tmp=first+second;
-    first=second;
-    second=tmp;
-    print(first);
-    i-=2;
-    i++;
+function fibo(n) {
+    first=0;
+    second=1;
+    while n > 0 {
+        tmp=first+second;
+        first=second;
+        second=tmp;
+        print(first);
+        n--;
+    }
 }
-printString("This is a string");
+a = 10;
+fibo(a);
+print(a);
 '''
 yacc.parse(s)
