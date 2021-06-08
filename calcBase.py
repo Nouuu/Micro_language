@@ -59,6 +59,7 @@ def t_NUMBER(t):
 # Ignored characters
 t_ignore = " \t\n\r"
 
+
 def t_newline(t):
     r"""\n+"""
     t.lexer.lineno += t.value.count("\n")
@@ -154,7 +155,7 @@ def p_expression_inc(p):
 def p_expression_inc_n(p):
     """statement : NAME PLUSEQUAL expression SEMI
     | NAME MINUSEQUAL expression SEMI"""
-    op = '+' if p[2] == '++' else '-'
+    op = '+' if p[2] == '+=' else '-'
     p[0] = ('assign', p[1], (op, p[1], p[3]))
 
 
