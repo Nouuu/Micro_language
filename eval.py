@@ -1,5 +1,5 @@
 names = {}
-
+functions = {}
 
 def evalExpr(t):
     if type(t) is not tuple:
@@ -33,8 +33,7 @@ def evalExpr(t):
 
 def evalInst(t):
     if t[0] == 'bloc':
-        evalInst(t[1])
-        evalInst(t[2])
+        eval_bloc(t)
     elif t[0] == 'empty':
         return
     elif t[0] == 'print':
@@ -42,15 +41,36 @@ def evalInst(t):
     elif t[0] == 'printString':
         print(t[1])
     elif t[0] == 'assign':
-        names[t[1]] = evalExpr(t[2])
+        eval_assign(t)
     elif t[0] == 'if':
-        if evalExpr(t[1]):
-            evalInst(t[2])
+        eval_if(t)
     elif t[0] == 'for':
-        evalInst(t[1])
-        while evalExpr(t[2]):
-            evalInst(t[4])
-            evalInst(t[3])
+        eval_for(t)
     elif t[0] == 'while':
-        while evalExpr(t[1]):
-            evalInst(t[2])
+        eval_while(t)
+
+
+def eval_bloc(t):
+    evalInst(t[1])
+    evalInst(t[2])
+
+
+def eval_while(t):
+    while evalExpr(t[1]):
+        evalInst(t[2])
+
+
+def eval_assign(t):
+    names[t[1]] = evalExpr(t[2])
+
+
+def eval_for(t):
+    evalInst(t[1])
+    while evalExpr(t[2]):
+        evalInst(t[4])
+        evalInst(t[3])
+
+
+def eval_if(t):
+    if evalExpr(t[1]):
+        evalInst(t[2])
