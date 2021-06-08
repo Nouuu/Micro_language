@@ -4,3 +4,11 @@
 venv/
 
 __pycache__/
+
+Digraph.gv
+
+Digraph.gv.pdf
+
+parser.out
+
+parsetab.py
