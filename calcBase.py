@@ -10,6 +10,7 @@ reserved = {
     'printString': 'PRINTSTRING',
     'for': 'FOR',
     'while': 'WHILE',
+    'function': 'FUNCTION'
 }
 
 tokens = [
