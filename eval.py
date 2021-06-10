@@ -1,5 +1,6 @@
 names = {}
 functions = {}
+names_stack = []
 
 
 def evalExpr(t):
@@ -56,6 +57,7 @@ def evalInst(t):
 
 
 def eval_call_function(t):
+    global names
     function = functions[t[1]][0]
     function_params = functions[t[1]][1]
     function_params_size = 0
@@ -73,12 +75,15 @@ def eval_call_function(t):
 
     if function_params_size != call_params_size:
         raise ValueError("Function call don't have right amount of parameters", function_params_size, call_params_size)
-
+    new_names = {}
     while call_params[0] == 'param':
-        names[function_params[2]] = evalExpr(call_params[2])
+        new_names[function_params[2]] = evalExpr(call_params[2])
         call_params = call_params[1]
         function_params = function_params[1]
+    names_stack.append(names)
+    names = new_names
     evalInst(function)
+    names = names_stack.pop()
 
 
 def eval_bloc(t):
