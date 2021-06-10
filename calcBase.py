@@ -164,10 +164,15 @@ def p_function(p):
         p[0] = ('function', p[2], p[7], p[4])
 
 
+def p_void_expression(p):
+    """statement : expression SEMI"""
+    p[0] = ('bloc', p[1], 'empty')
+
+
 def p_call_function(p):
-    """statement : NAME LPAREN expressions RPAREN SEMI
-    | NAME LPAREN RPAREN SEMI"""
-    if len(p) == 5:
+    """expression : NAME LPAREN expressions RPAREN
+    | NAME LPAREN RPAREN"""
+    if len(p) == 4:
         p[0] = ('call', p[1], 'empty')
     else:
         p[0] = ('call', p[1], p[3])
@@ -198,7 +203,7 @@ def p_expression_inc_n(p):
 
 
 def p_expr_uminus(p):
-    'expression : MINUS expression %prec UMINUS'
+    """expression : MINUS expression %prec UMINUS"""
     p[0] = -p[2]
 
 
