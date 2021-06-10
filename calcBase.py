@@ -40,10 +40,10 @@ t_AND = r'&'
 t_OR = r'\|'
 t_SEMI = r';'
 t_COMA = r','
+t_ISEQUAL = r'=='
 t_EQUALS = r'='
 t_GREATER = r'>'
 t_LOWER = r'<'
-t_ISEQUAL = r'=='
 
 
 def t_NAME(t):
@@ -134,7 +134,7 @@ def p_expression_binop(p):
 
 def p_condition(p):
     """statement : IF expression THEN LACO bloc RACO"""
-    p[0] = ('if', p[2], p[4])
+    p[0] = ('if', p[2], p[5])
 
 
 def p_parameters(p):
