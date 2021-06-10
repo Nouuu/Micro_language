@@ -30,6 +30,8 @@ def evalExpr(t):
         return evalExpr(t[1]) < evalExpr(t[2])
     if t[0] == '==':
         return evalExpr(t[1]) == evalExpr(t[2])
+    elif t[0] == 'call':
+        return eval_call_function(t)
     raise ValueError("Can't parse this ", t)
 
 
@@ -50,10 +52,10 @@ def evalInst(t):
         eval_for(t)
     elif t[0] == 'while':
         eval_while(t)
+    elif t[0] == 'call':
+        return eval_call_function(t)
     elif t[0] == 'function':
         functions[t[1]] = (t[2], t[3])
-    elif t[0] == 'call':
-        eval_call_function(t)
 
 
 def eval_call_function(t):
@@ -82,8 +84,11 @@ def eval_call_function(t):
         function_params = function_params[1]
     names_stack.append(names)
     names = new_names
-    evalInst(function)
+    result = evalInst(function)
     names = names_stack.pop()
+    if result is None:
+        return 0
+    return result
 
 
 def eval_bloc(t):
