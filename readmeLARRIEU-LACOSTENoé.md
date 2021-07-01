@@ -62,8 +62,6 @@ if  a > 10 then {
 10
 ```
 
-
-
 ### While, For
 
 ```bash
@@ -130,7 +128,7 @@ fibo(a);
 5
 ```
 
-### Fonciton récursive et scope des variables
+### Fonction récursive et scope des variables
 
 ```bash
 function rec(n) {
@@ -152,5 +150,69 @@ print(a);
 4
 ----
 5
+```
+
+### Retour de fonction
+
+```bash
+function factorial(a) {
+    if a > 1 then {
+        return a * factorial(a-1);
+    }
+    return a;
+}
+print(factorial(10));
+
+3628800
+```
+
+### Chargement de fichiers de code au démarrage
+
+Possibilité de charger des fichiers au lancement pouvant contenir des déclarations de fonctions ou même des instruction.
+
+**Fichier fibo :**
+
+```bash
+function fibo(n) {
+    first=0;
+    second=1;
+    while n > 0 {
+        tmp=first+second;
+        first=second;
+        second=tmp;
+        print(first);
+        n--;
+    }
+}
+```
+
+**Fichier factorial :**
+
+```bash
+function factorial(a) {
+    if a > 1 then {
+        return a * factorial(a-1);
+    }
+    return a;
+}
+```
+
+**Exécution du programme**
+
+```bash
+python main.py fibo factorial
+
+cmd (type exit(); to leave) > fibo(10);
+
+1
+1
+2
+3
+5
+8
+13
+21
+34
+55
 ```
 
