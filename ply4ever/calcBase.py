@@ -2,7 +2,7 @@ import sys
 
 import ply.lex as lex
 
-from eval import evalInst
+from ply4ever.eval import evalInst
 from genereTreeGraphviz import printTreeGraph
 
 reserved = {
@@ -17,16 +17,16 @@ reserved = {
 }
 
 tokens = [
-             'NUMBER', 'MINUS', 'STRING',
+             'NUMBER', 'MINUS', 'CHARS',
              'PLUS', 'TIMES', 'DIVIDE',
              'PLUSPLUS', 'PLUSEQUAL', 'MINUSMINUS', 'MINUSEQUAL',
-             'LPAREN', 'RPAREN', 'LACO', 'RACO',
+             'LPAREN', 'RPAREN', 'LACO', 'RACO', "DOUBLEQUOTE",
              'AND', 'OR', "EQUALS", "NAME", "SEMI", "COMA",
              "GREATER", "LOWER", "ISEQUAL"
          ] + list(reserved.values())
 
 # Tokens
-t_STRING = r'".+"'
+t_CHARS = r'".+"'
 t_PLUSPLUS = r'\+\+'
 t_PLUSEQUAL = r'\+='
 t_MINUSMINUS = r'\-\-'
@@ -39,6 +39,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LACO = r'\{'
 t_RACO = r'\}'
+t_DOUBLEQUOTE = r'"'
 t_AND = r'&'
 t_OR = r'\|'
 t_SEMI = r';'
@@ -92,8 +93,8 @@ precedence = (
 def p_start(p):
     """start : bloc"""
     p[0] = p[1]
-    print(p[0])
-    printTreeGraph(p[0])
+    # print(p[0])
+    # printTreeGraph(p[0])
     evalInst(p[1])
 
 
@@ -122,9 +123,19 @@ def p_statement_return(p):
     p[0] = ('return', p[2], 'empty')
 
 
+def p_concatened_string(p):
+    r"""STRING : CHARS
+    | STRING PLUS expression
+    | expression PLUS STRING"""
+    if len(p) == 2:
+        p[0] = ('string', p[1])
+    else:
+        p[0] = ('string', p[1], p[3])
+
+
 def p_statement_print_string(p):
-    r"""statement : PRINTSTRING LPAREN STRING RPAREN SEMI"""
-    p[0] = ('printString', p[3].strip("\""), 'empty')
+    r"""statement : PRINT LPAREN STRING RPAREN SEMI"""
+    p[0] = ('print', p[3], 'empty')
 
 
 def p_expression_binop(p):
@@ -235,27 +246,33 @@ def p_error(p):
     print("Syntax error at '%s'" % p.value)
 
 
-import ply.yacc as yacc
+# import ply.yacc as yacc
+#
+# yacc.yacc()
 
-yacc.yacc()
 
-
-def load_files():
+def load_files(yacc):
     if len(sys.argv) >= 2:
         for i in range(1, len(sys.argv)):
             with open(sys.argv[i], 'r') as file:
                 yacc.parse(file.read())
 
 
-load_files()
+def cli(yacc):
+    while True:
+        s = input('cmd (type exit(); to leave) > ')
+        if s == "exit();":
+            print("Bye bye !")
+            return
+        yacc.parse(s)
 
-# s = input('calc > ')
-s = '''
-fibo(10);
-printString("------------------");
-print(factorial(10));
-'''
-s2 = '''
-for (i=0; i < 10; i+=2;) { print(i); }
-'''
-yacc.parse(s)
+# # s = input('calc > ')
+# s = '''
+# fibo(10);
+# printString("------------------");
+# print(factorial(10));
+# '''
+# s2 = '''
+# for (i=0; i < 10; i+=2;) { print(i); }
+# '''
+# yacc.parse(s)

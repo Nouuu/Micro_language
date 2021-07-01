@@ -11,6 +11,8 @@ def evalExpr(t):
             return True
         if t.lower() == 'false' or t.lower() == 'faux':
             return False
+        if type(t) is str and t[0] == '"' and t[len(t)-1] == '"':
+            return t.strip("\"")
         return names[t]
     if t[0] == '+':
         return evalExpr(t[1]) + evalExpr(t[2])
@@ -32,6 +34,8 @@ def evalExpr(t):
         return evalExpr(t[1]) == evalExpr(t[2])
     if t[0] == 'call':
         return eval_call_function(t)
+    if t[0] == 'string':
+        return str(evalExpr(t[1])) + str(evalExpr(t[2])) if len(t) == 3 else str(evalExpr(t[1]))
     raise ValueError("Can't parse this ", t)
 
 
@@ -42,8 +46,6 @@ def evalInst(t):
         return
     elif t[0] == 'print':
         print(evalExpr(t[1]))
-    elif t[0] == 'printString':
-        print(t[1])
     elif t[0] == 'assign':
         eval_assign(t)
     elif t[0] == 'if':
