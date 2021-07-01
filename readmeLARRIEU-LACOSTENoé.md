@@ -9,11 +9,22 @@ cmd (type exit(); to leave) > print((2+6)*3);
 24
 ```
 
-### PrintString
+### Print d'une chaine de caractère
 
 ```bash
-cmd (type exit(); to leave) > printString("ma jolie string");
+cmd (type exit(); to leave) > print("ma jolie string");
 ma jolie string
+```
+
+### Print concaténation
+
+```bash
+cmd (type exit(); to leave) > a = 10;
+cmd (type exit(); to leave) > print("a="+a);
+a=10
+
+cmd (type exit(); to leave) > print("1+2="+(1+2));
+1+2=3
 ```
 
 
@@ -170,7 +181,7 @@ print(factorial(10));
 
 Possibilité de charger des fichiers au lancement pouvant contenir des déclarations de fonctions ou même des instruction.
 
-**Fichier fibo :**
+**Fichier *fibo* :**
 
 ```bash
 function fibo(n) {
@@ -186,7 +197,7 @@ function fibo(n) {
 }
 ```
 
-**Fichier factorial :**
+**Fichier *factorial* :**
 
 ```bash
 function factorial(a) {
