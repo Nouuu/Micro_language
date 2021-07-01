@@ -30,14 +30,14 @@ def evalExpr(t):
         return evalExpr(t[1]) < evalExpr(t[2])
     if t[0] == '==':
         return evalExpr(t[1]) == evalExpr(t[2])
-    elif t[0] == 'call':
+    if t[0] == 'call':
         return eval_call_function(t)
     raise ValueError("Can't parse this ", t)
 
 
 def evalInst(t):
     if t[0] == 'bloc':
-        eval_bloc(t)
+        return eval_bloc(t)
     elif t[0] == 'empty':
         return
     elif t[0] == 'print':
@@ -47,15 +47,17 @@ def evalInst(t):
     elif t[0] == 'assign':
         eval_assign(t)
     elif t[0] == 'if':
-        eval_if(t)
+        return eval_if(t)
     elif t[0] == 'for':
         eval_for(t)
     elif t[0] == 'while':
         eval_while(t)
     elif t[0] == 'call':
-        return eval_call_function(t)
+        eval_call_function(t)
     elif t[0] == 'function':
         functions[t[1]] = (t[2], t[3])
+    elif t[0] == 'return':
+        return evalExpr(t[1])
 
 
 def eval_call_function(t):
@@ -92,13 +94,15 @@ def eval_call_function(t):
 
 
 def eval_bloc(t):
-    evalInst(t[1])
-    evalInst(t[2])
+    result = evalInst(t[1])
+    return result if result is not None else evalInst(t[2])
 
 
 def eval_while(t):
     while evalExpr(t[1]):
-        evalInst(t[2])
+        result = evalInst(t[2])
+        if result is not None:
+            return result
 
 
 def eval_assign(t):
@@ -108,10 +112,14 @@ def eval_assign(t):
 def eval_for(t):
     evalInst(t[1])
     while evalExpr(t[2]):
-        evalInst(t[4])
-        evalInst(t[3])
+        result = evalInst(t[3])
+        if result is not None:
+            return result
+        result = evalInst(t[4])
+        if result is not None:
+            return result
 
 
 def eval_if(t):
     if evalExpr(t[1]):
-        evalInst(t[2])
+        return evalInst(t[2])

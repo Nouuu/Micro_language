@@ -1,3 +1,5 @@
+import sys
+
 import ply.lex as lex
 
 from eval import evalInst
@@ -10,7 +12,8 @@ reserved = {
     'printString': 'PRINTSTRING',
     'for': 'FOR',
     'while': 'WHILE',
-    'function': 'FUNCTION'
+    'function': 'FUNCTION',
+    'return': 'RETURN'
 }
 
 tokens = [
@@ -112,6 +115,11 @@ def p_statement_assign(p):
 def p_statement_print(p):
     """statement : PRINT LPAREN expression RPAREN SEMI"""
     p[0] = ('print', p[3], 'empty')
+
+
+def p_statement_return(p):
+    """statement : RETURN expression SEMI"""
+    p[0] = ('return', p[2], 'empty')
 
 
 def p_statement_print_string(p):
