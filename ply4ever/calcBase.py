@@ -3,13 +3,12 @@ import sys
 import ply.lex as lex
 
 from ply4ever.eval import evalInst
-from genereTreeGraphviz import printTreeGraph
+from ply4ever.genereTreeGraphviz import printTreeGraph
 
 reserved = {
     'if': 'IF',
     'then': 'THEN',
     'print': 'PRINT',
-    'printString': 'PRINTSTRING',
     'for': 'FOR',
     'while': 'WHILE',
     'function': 'FUNCTION',
@@ -20,7 +19,7 @@ tokens = [
              'NUMBER', 'MINUS', 'CHARS',
              'PLUS', 'TIMES', 'DIVIDE',
              'PLUSPLUS', 'PLUSEQUAL', 'MINUSMINUS', 'MINUSEQUAL',
-             'LPAREN', 'RPAREN', 'LACO', 'RACO', "DOUBLEQUOTE",
+             'LPAREN', 'RPAREN', 'LACO', 'RACO',
              'AND', 'OR', "EQUALS", "NAME", "SEMI", "COMA",
              "GREATER", "LOWER", "ISEQUAL"
          ] + list(reserved.values())
@@ -39,7 +38,6 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LACO = r'\{'
 t_RACO = r'\}'
-t_DOUBLEQUOTE = r'"'
 t_AND = r'&'
 t_OR = r'\|'
 t_SEMI = r';'
@@ -93,8 +91,8 @@ precedence = (
 def p_start(p):
     """start : bloc"""
     p[0] = p[1]
-    # print(p[0])
-    # printTreeGraph(p[0])
+    print(p[0])
+    printTreeGraph(p[0])
     evalInst(p[1])
 
 
