@@ -239,21 +239,23 @@ import ply.yacc as yacc
 
 yacc.yacc()
 
+
+def load_files():
+    if len(sys.argv) >= 2:
+        for i in range(1, len(sys.argv)):
+            with open(sys.argv[i], 'r') as file:
+                yacc.parse(file.read())
+
+
+load_files()
+
 # s = input('calc > ')
 s = '''
-function fibo(n) {
-    first=0;
-    second=1;
-    while n > 0 {
-        tmp=first+second;
-        first=second;
-        second=tmp;
-        print(first);
-        n--;
-    }
-}
-a = 10;
-fibo(a);
-print(a);
+fibo(10);
+printString("------------------");
+print(factorial(10));
+'''
+s2 = '''
+for (i=0; i < 10; i+=2;) { print(i); }
 '''
 yacc.parse(s)
