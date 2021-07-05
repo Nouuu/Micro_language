@@ -5,6 +5,7 @@ import ply.lex as lex
 from ply4ever.eval import evalInst
 from ply4ever.genereTreeGraphviz import printTreeGraph
 
+showTree = False
 reserved = {
     'if': 'IF',
     'then': 'THEN',
@@ -12,7 +13,8 @@ reserved = {
     'for': 'FOR',
     'while': 'WHILE',
     'function': 'FUNCTION',
-    'return': 'RETURN'
+    'return': 'RETURN',
+    'load': 'LOAD'
 }
 
 tokens = [
@@ -91,8 +93,9 @@ precedence = (
 def p_start(p):
     """start : bloc"""
     p[0] = p[1]
-    print(p[0])
-    printTreeGraph(p[0])
+    if showTree:
+        print(p[0])
+        printTreeGraph(p[0])
     evalInst(p[1])
 
 
@@ -240,6 +243,12 @@ def p_expression_name(p):
     p[0] = p[1]
 
 
+def p_load_file(p):
+    """statement : LOAD LPAREN CHARS RPAREN SEMI"""
+    load_file(p[3].strip("\""))
+    p[0] = 'empty'
+
+
 def p_error(p):
     print("Syntax error at '%s'" % p.value)
 
@@ -248,29 +257,39 @@ def p_error(p):
 #
 # yacc.yacc()
 
+yacc = None
 
-def load_files(yacc):
+
+def set_yacc(yacc_):
+    global yacc
+    yacc = yacc_
+
+
+def load_files():
+    global yacc
     if len(sys.argv) >= 2:
         for i in range(1, len(sys.argv)):
-            with open(sys.argv[i], 'r') as file:
-                yacc.parse(file.read())
+            load_file(sys.argv[i])
 
 
-def cli(yacc):
+def load_file(path):
+    with open(path, 'r') as file:
+        yacc.parse(file.read())
+
+
+def cli():
+    global showTree, yacc
     while True:
-        s = input('cmd (type exit(); to leave) > ')
+        s = input('cmd > ')
         if s == "exit();":
             print("Bye bye !")
             return
+        if s == "debugOn();":
+            showTree = True
+            print("Debug ON !")
+            continue
+        if s == "debugOff();":
+            showTree = False
+            print("Debug OFF !")
+            continue
         yacc.parse(s)
-
-# # s = input('calc > ')
-# s = '''
-# fibo(10);
-# printString("------------------");
-# print(factorial(10));
-# '''
-# s2 = '''
-# for (i=0; i < 10; i+=2;) { print(i); }
-# '''
-# yacc.parse(s)
