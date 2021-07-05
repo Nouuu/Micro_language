@@ -228,3 +228,42 @@ cmd (type exit(); to leave) > fibo(10);
 55
 ```
 
+### Chargement de fichiers de code pendant l'exécution
+
+Possibilité de charger des fichiers pendant l'exécution pouvant contenir des déclarations de fonctions ou même des instruction.
+
+**Fichier *fibo* :**
+
+```bash
+function fibo(n) {
+    first=0;
+    second=1;
+    while n > 0 {
+        tmp=first+second;
+        first=second;
+        second=tmp;
+        print(first);
+        n--;
+    }
+}
+```
+
+**Exécution du programme**
+
+```bash
+python main.py
+
+cmd (type exit(); to leave) > load("fibo");
+cmd (type exit(); to leave) > fibo(10);
+
+1
+1
+2
+3
+5
+8
+13
+21
+34
+55
+```
