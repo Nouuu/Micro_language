@@ -11,9 +11,9 @@ def evalExpr(t):
             return True
         if t.lower() == 'false' or t.lower() == 'faux':
             return False
-        if type(t) is str and t[0] == '"' and t[len(t)-1] == '"':
+        if type(t) is str and t[0] == '"' and t[len(t) - 1] == '"':
             return t.strip("\"")
-        return names[t]
+        return evalExpr(names[t])
     if t[0] == '+':
         return evalExpr(t[1]) + evalExpr(t[2])
     if t[0] == '*':
