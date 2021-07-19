@@ -21,7 +21,7 @@ tokens = [
              'NUMBER', 'MINUS', 'CHARS',
              'PLUS', 'TIMES', 'DIVIDE',
              'PLUSPLUS', 'PLUSEQUAL', 'MINUSMINUS', 'MINUSEQUAL',
-             'LPAREN', 'RPAREN', 'LACO', 'RACO',
+             'LPAREN', 'RPAREN', 'LACO', 'RACO', 'LHOOK', 'RHOOK',
              'AND', 'OR', "EQUALS", "NAME", "SEMI", "COMA",
              "GREATER", "LOWER", "ISEQUAL"
          ] + list(reserved.values())
@@ -40,6 +40,8 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LACO = r'\{'
 t_RACO = r'\}'
+t_LHOOK = r'\['
+t_RHOOK = r'\]'
 t_AND = r'&'
 t_OR = r'\|'
 t_SEMI = r';'
@@ -119,6 +121,11 @@ def p_statement_print(p):
     p[0] = ('print', p[3], 'empty')
 
 
+def p_statement_print_string(p):
+    r"""statement : PRINT LPAREN STRING RPAREN SEMI"""
+    p[0] = ('print', p[3], 'empty')
+
+
 def p_statement_return(p):
     """statement : RETURN expression SEMI"""
     p[0] = ('return', p[2], 'empty')
@@ -134,9 +141,9 @@ def p_concatened_string(p):
         p[0] = ('string', p[1], p[3])
 
 
-def p_statement_print_string(p):
-    r"""statement : PRINT LPAREN STRING RPAREN SEMI"""
-    p[0] = ('print', p[3], 'empty')
+def p_ARRAY(p):
+    r"""ARRAY : LHOOK expressions RHOOK"""
+    p[0] = ('array', p[2], 'empty')
 
 
 def p_expression_binop(p):
@@ -234,6 +241,11 @@ def p_expression_group(p):
 
 def p_expression_number(p):
     """expression : NUMBER"""
+    p[0] = p[1]
+
+
+def p_expression_array(p):
+    """expression : ARRAY"""
     p[0] = p[1]
 
 
