@@ -66,6 +66,8 @@ def evalInst(t):
         functions[t[1]] = (t[2], t[3])
     elif t[0] == 'return':
         return evalExpr(t[1])
+    elif t[0] == 'concat_array':
+        eval_concat_array(t[1], t[2])
 
 
 def eval_call_function(t):
@@ -142,3 +144,22 @@ def eval_access_array(name, index):
         array = array[1]
         index -= 1
     return evalExpr(array[2])
+
+
+def eval_concat_array(name, expression):
+    global names
+    mytuple = names[name]
+    new_tuple = eval_concat_array_rec(mytuple, expression)
+    names[name] = new_tuple
+
+
+def eval_concat_array_rec(mytuple, expression):
+    if type(mytuple[1]) is tuple:
+        mylist = list(mytuple)
+        mylist[1] = eval_concat_array_rec(mytuple[1], expression)
+        mytuple = tuple(mylist)
+        return mytuple
+    mytuple = list(mytuple)
+    mytuple[1] = ('param', 'empty', expression)
+    mytuple = tuple(mytuple)
+    return mytuple

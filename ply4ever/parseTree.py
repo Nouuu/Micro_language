@@ -36,7 +36,7 @@ t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
-t_CONCAT = r'->'
+t_CONCAT = r'<-'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LACO = r'\{'
@@ -88,6 +88,7 @@ precedence = (
     ('nonassoc', 'AND', 'OR'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
+    ('left', 'NAME', 'CONCAT'),
     ('left', 'PLUSPLUS', 'PLUSEQUAL', 'MINUSMINUS', 'MINUSEQUAL'),
     ('right', 'UMINUS'),
 )
@@ -150,13 +151,12 @@ def p_ARRAY(p):
 def p_array_element(p):
     r"""expression : ARRAY LHOOK NUMBER RHOOK
     | NAME LHOOK NUMBER RHOOK"""
-    # TODO pas très sûr pour l'histoire du NAME au niveau des décallages / précédences, à tester
     p[0] = ('access_array', p[1], p[3])
 
 
 def p_array_concat(p):
-    r"""expression : ARRAY CONCAT expression
-    | NAME CONCAT expression"""
+    r"""statement : ARRAY CONCAT expression SEMI
+    | NAME CONCAT expression SEMI"""
     p[0] = ('concat_array', p[1], p[3])
 
 
