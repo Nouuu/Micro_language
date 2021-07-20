@@ -11,9 +11,9 @@ def evalExpr(t):
             return True
         if t.lower() == 'false' or t.lower() == 'faux':
             return False
-        if type(t) is str and t[0] == '"' and t[len(t)-1] == '"':
+        if type(t) is str and t[0] == '"' and t[len(t) - 1] == '"':
             return t.strip("\"")
-        return names[t]
+        return evalExpr(names[t])
     if t[0] == '+':
         return evalExpr(t[1]) + evalExpr(t[2])
     if t[0] == '*':
@@ -32,6 +32,12 @@ def evalExpr(t):
         return evalExpr(t[1]) < evalExpr(t[2])
     if t[0] == '==':
         return evalExpr(t[1]) == evalExpr(t[2])
+    if t[0] == 'access_array':
+        return eval_access_array(t[1], t[2])
+    if t[0] == 'array':
+        return t[1]
+    if t[0] == 'param':
+        return str(evalExpr(t[2])) + ' ' + str(evalExpr(t[1])) if type(t[1]) is tuple else str(evalExpr(t[2]))
     if t[0] == 'call':
         return eval_call_function(t)
     if t[0] == 'string':
@@ -60,6 +66,8 @@ def evalInst(t):
         functions[t[1]] = (t[2], t[3])
     elif t[0] == 'return':
         return evalExpr(t[1])
+    elif t[0] == 'concat_array':
+        eval_concat_array(t[1], t[2])
 
 
 def eval_call_function(t):
@@ -114,14 +122,42 @@ def eval_assign(t):
 def eval_for(t):
     evalInst(t[1])
     while evalExpr(t[2]):
-        result = evalInst(t[3])
-        if result is not None:
-            return result
         result = evalInst(t[4])
         if result is not None:
             return result
+        evalInst(t[3])
 
 
 def eval_if(t):
     if evalExpr(t[1]):
         return evalInst(t[2])
+
+
+def eval_access_array(name, index):
+    global names
+    array = names[name]
+    while index > 0:
+        if type(array[1]) is not tuple:
+            raise Exception('Index out of range')
+        array = array[1]
+        index -= 1
+    return evalExpr(array[2])
+
+
+def eval_concat_array(name, expression):
+    global names
+    mytuple = names[name]
+    new_tuple = eval_concat_array_rec(mytuple, expression)
+    names[name] = new_tuple
+
+
+def eval_concat_array_rec(mytuple, expression):
+    if type(mytuple[1]) is tuple:
+        mylist = list(mytuple)
+        mylist[1] = eval_concat_array_rec(mytuple[1], expression)
+        mytuple = tuple(mylist)
+        return mytuple
+    mytuple = list(mytuple)
+    mytuple[1] = ('param', 'empty', expression)
+    mytuple = tuple(mytuple)
+    return mytuple

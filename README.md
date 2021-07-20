@@ -3,29 +3,47 @@ Micro language en python avec ply
 
 ## Fonctionnalités
 
+- [Calcul de base, print](#calcul-de-base-print)
+- [Print d'une chaine de caractère](#print-dune-chaine-de-caractère)
+- [Print concaténation](#print-concaténation)
+- [Opérations booléenne](#opérations-booléenne)
+- [Affectation, print](#affectation-print)
+- [Affectation élargie](#affectation-élargie)
+- [Condition](#condition)
+- [While, For](#while-for)
+- [Fonction void avec et sans paramètres](#fonction-void-avec-et-sans-paramètres)
+- [Fonction récursive et scope des variables](#fonction-récursive-et-scope-des-variables)
+- [Retour de fonction](#retour-de-fonction)
+- [Tableaux](#tableaux)
+  * [Affectation d'un tableau](#affectation-dun-tableau)
+  * [Accès à une case du tableau](#accès-à-une-case-du-tableau)
+  * [Concaténation dans le tableau](#concaténation-dans-le-tableau)
+- [Chargement de fichiers de code au démarrage](#chargement-de-fichiers-de-code-au-démarrage)
+- [Chargement de fichiers de code pendant l'exécution](#chargement-de-fichiers-de-code-pendant-lexécution)
+
 ### Calcul de base, print
 
 ```bash
-cmd (type exit(); to leave) > print((2+6)*3);
+cmd > print((2+6)*3);
 24
 ```
 
 ### Print d'une chaine de caractère
 
 ```bash
-cmd (type exit(); to leave) > print("ma jolie string");
+cmd > print("ma jolie string");
 ma jolie string
 ```
 
 ### Print concaténation
 
 ```bash
-cmd (type exit(); to leave) > a = 10;
-cmd (type exit(); to leave) > print("a="+a);
-a=10
+cmd > a = 10;
+cmd > print("a=",a);
+a= 10
 
-cmd (type exit(); to leave) > print("1+2="+(1+2));
-1+2=3
+cmd > print("1+2=",1+2);
+1+2= 3
 ```
 
 
@@ -33,30 +51,30 @@ cmd (type exit(); to leave) > print("1+2="+(1+2));
 ### Opérations booléenne
 
 ```bash
-cmd (type exit(); to leave) > print(3+6 > 9);
+cmd > print(3+6 > 9);
 False
 
-cmd (type exit(); to leave) > print( (3+6>9) | (2-2==0));
+cmd > print( (3+6>9) | (2-2==0));
 True
 ```
 
 ### Affectation, print
 
 ```bash
-cmd (type exit(); to leave) > x = 4; x=x+3; print(x);
+cmd > x = 4; x=x+3; print(x);
 7
 ```
 
 ### Affectation élargie
 
 ```bash
-cmd (type exit(); to leave) > x = 4; x++; print(x);
+cmd > x = 4; x++; print(x);
 5
 
-cmd (type exit(); to leave) > x = 66; x--; print(x);
+cmd > x = 66; x--; print(x);
 65
 
-cmd (type exit(); to leave) > x = 100; x+=3; x-=5; print(x);
+cmd > x = 100; x+=3; x-=5; print(x);
 98
 ```
 
@@ -68,7 +86,7 @@ if a > 9 then {
 	print(a); 
 } 
 if  a > 10 then {
-	printString("never");
+	print("never");
 }
 
 10
@@ -77,13 +95,13 @@ if  a > 10 then {
 ### While, For
 
 ```bash
-cmd (type exit(); to leave) > x=4; while x > 0 { print(x); x--;}
+cmd > x=4; while x > 0 { print(x); x--;}
 4
 3
 2
 1
 
-cmd (type exit(); to leave) > for (i=0; i < 10; i+=2;) { print(i); }
+cmd > for (i=0; i < 10; i+=2;) { print(i); }
 0
 2
 4
@@ -152,7 +170,7 @@ function rec(n) {
 }
 a=5;
 rec(a);
-printString("----");
+print("----");
 print(a);
 
 0
@@ -176,6 +194,43 @@ function factorial(a) {
 print(factorial(10));
 
 3628800
+```
+
+### Tableaux
+
+#### Affectation d'un tableau
+
+Un tableau peut être affecté à une variable et peut contenir plusieurs expression différente :
+
+```bash
+cmd > array = ["coucou", "toi", 1, 2, 3+3];
+cmd > print(array);
+
+coucou toi 1 2 6
+```
+
+#### Accès à une case du tableau
+
+On peut acceder à n'importe quel case du tableau pour en récupérer l'expression. Si l'index est hors de portée, une exception est levé.
+
+```bash
+cmd > array = ["coucou", "toi", 1, 2, 3+3];
+cmd > print(array[1]);
+
+toi
+```
+
+#### Concaténation dans le tableau
+
+Il est possible de rajouter des élément dans un tableau existant de la manière suivante :
+
+```bash
+cmd > array = [ 1, 2, 3 ];
+cmd > array <- 4;
+cmd > array <- 4 + 1;
+cmd > print(array);
+
+1 2 3 4 5
 ```
 
 ### Chargement de fichiers de code au démarrage
@@ -214,7 +269,7 @@ function factorial(a) {
 ```bash
 python main.py fibo factorial
 
-cmd (type exit(); to leave) > fibo(10);
+cmd > fibo(10);
 
 1
 1
@@ -253,8 +308,8 @@ function fibo(n) {
 ```bash
 python main.py
 
-cmd (type exit(); to leave) > load("fibo");
-cmd (type exit(); to leave) > fibo(10);
+cmd > load("fibo");
+cmd > fibo(10);
 
 1
 1

@@ -19,15 +19,15 @@ reserved = {
 
 tokens = [
              'NUMBER', 'MINUS', 'CHARS',
-             'PLUS', 'TIMES', 'DIVIDE',
+             'PLUS', 'TIMES', 'DIVIDE', 'CONCAT',
              'PLUSPLUS', 'PLUSEQUAL', 'MINUSMINUS', 'MINUSEQUAL',
-             'LPAREN', 'RPAREN', 'LACO', 'RACO',
+             'LPAREN', 'RPAREN', 'LACO', 'RACO', 'LHOOK', 'RHOOK',
              'AND', 'OR', "EQUALS", "NAME", "SEMI", "COMA",
              "GREATER", "LOWER", "ISEQUAL"
          ] + list(reserved.values())
 
 # Tokens
-t_CHARS = r'".+"'
+t_CHARS = r'"[^"]+"'
 t_PLUSPLUS = r'\+\+'
 t_PLUSEQUAL = r'\+='
 t_MINUSMINUS = r'\-\-'
@@ -36,10 +36,13 @@ t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
+t_CONCAT = r'<-'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LACO = r'\{'
 t_RACO = r'\}'
+t_LHOOK = r'\['
+t_RHOOK = r'\]'
 t_AND = r'&'
 t_OR = r'\|'
 t_SEMI = r';'
@@ -85,6 +88,7 @@ precedence = (
     ('nonassoc', 'AND', 'OR'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'TIMES', 'DIVIDE'),
+    ('left', 'NAME', 'CONCAT'),
     ('left', 'PLUSPLUS', 'PLUSEQUAL', 'MINUSMINUS', 'MINUSEQUAL'),
     ('right', 'UMINUS'),
 )
@@ -115,8 +119,13 @@ def p_statement_assign(p):
 
 
 def p_statement_print(p):
-    """statement : PRINT LPAREN expression RPAREN SEMI"""
+    """statement : PRINT LPAREN expressions RPAREN SEMI"""
     p[0] = ('print', p[3], 'empty')
+
+
+# def p_statement_print_string(p):
+#     r"""statement : PRINT LPAREN STRING RPAREN SEMI"""
+#     p[0] = ('print', p[3], 'empty')
 
 
 def p_statement_return(p):
@@ -124,19 +133,31 @@ def p_statement_return(p):
     p[0] = ('return', p[2], 'empty')
 
 
-def p_concatened_string(p):
-    r"""STRING : CHARS
-    | STRING PLUS expression
-    | expression PLUS STRING"""
-    if len(p) == 2:
-        p[0] = ('string', p[1])
-    else:
-        p[0] = ('string', p[1], p[3])
+# def p_concatened_string(p):
+#     r"""STRING : CHARS
+#     | STRING PLUS expression
+#     | expression PLUS STRING"""
+#     if len(p) == 2:
+#         p[0] = ('string', p[1])
+#     else:
+#         p[0] = ('string', p[1], p[3])
+#
+
+def p_ARRAY(p):
+    r"""ARRAY : LHOOK expressions RHOOK"""
+    p[0] = ('array', p[2], 'empty')
 
 
-def p_statement_print_string(p):
-    r"""statement : PRINT LPAREN STRING RPAREN SEMI"""
-    p[0] = ('print', p[3], 'empty')
+def p_array_element(p):
+    r"""expression : ARRAY LHOOK NUMBER RHOOK
+    | NAME LHOOK NUMBER RHOOK"""
+    p[0] = ('access_array', p[1], p[3])
+
+
+def p_array_concat(p):
+    r"""statement : ARRAY CONCAT expression SEMI
+    | NAME CONCAT expression SEMI"""
+    p[0] = ('concat_array', p[1], p[3])
 
 
 def p_expression_binop(p):
@@ -234,6 +255,16 @@ def p_expression_group(p):
 
 def p_expression_number(p):
     """expression : NUMBER"""
+    p[0] = p[1]
+
+
+def p_expression_array(p):
+    """expression : ARRAY"""
+    p[0] = p[1]
+
+
+def p_expression_chars(p):
+    """expression : CHARS"""
     p[0] = p[1]
 
 
