@@ -1,0 +1,13 @@
+function fibo() {
+    n=10;
+    first=0;
+    second=1;
+    while n > 0 {
+        tmp=first+second;
+        first=second;
+        second=tmp;
+        print(first);
+        n--;
+    }
+}
+fibo();

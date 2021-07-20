@@ -1,0 +1,11 @@
+function rec(n) {
+    if n > 0 then {
+        n--;
+        rec(n);
+        print(n);
+    }
+}
+a=5;
+rec(a);
+print("----");
+print(a);
