@@ -37,7 +37,7 @@ def evalExpr(t):
     if t[0] == 'array':
         return t[1]
     if t[0] == 'param':
-        return str(evalExpr(t[2])) + ', ' + str(evalExpr(t[1])) if type(t[1]) is tuple else str(evalExpr(t[2]))
+        return str(evalExpr(t[2])) + ' ' + str(evalExpr(t[1])) if type(t[1]) is tuple else str(evalExpr(t[2]))
     if t[0] == 'call':
         return eval_call_function(t)
     if t[0] == 'string':
