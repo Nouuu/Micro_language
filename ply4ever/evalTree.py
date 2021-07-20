@@ -122,12 +122,10 @@ def eval_assign(t):
 def eval_for(t):
     evalInst(t[1])
     while evalExpr(t[2]):
-        result = evalInst(t[3])
-        if result is not None:
-            return result
         result = evalInst(t[4])
         if result is not None:
             return result
+        evalInst(t[3])
 
 
 def eval_if(t):
