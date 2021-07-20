@@ -35,9 +35,9 @@ def evalExpr(t):
     if t[0] == 'access_array':
         return eval_access_array(t[1], t[2])
     if t[0] == 'array':
-        return '[' + evalExpr(t[1]) + ']'
+        return t[1]
     if t[0] == 'param':
-        return str(evalExpr(t[2])) + ', ' + str(evalExpr(t[1])) if len(t) == 3 else str(evalExpr(t[2]))
+        return str(evalExpr(t[2])) + ', ' + str(evalExpr(t[1])) if type(t[1]) is tuple else str(evalExpr(t[2]))
     if t[0] == 'call':
         return eval_call_function(t)
     if t[0] == 'string':
@@ -134,4 +134,11 @@ def eval_if(t):
 
 
 def eval_access_array(name, index):
-    return ''
+    global names
+    array = names[name]
+    while index > 0:
+        if type(array[1]) is not tuple:
+            raise Exception('Index out of range')
+        array = array[1]
+        index -= 1
+    return evalExpr(array[2])
