@@ -16,6 +16,7 @@ Micro language en python avec ply
 - [Retour de fonction](#retour-de-fonction)
 - [Tableaux](#tableaux)
   * [Affectation d'un tableau](#affectation-dun-tableau)
+  * [Taille d'un tableau](#Taille dun tableau)
   * [Accès à une case du tableau](#accès-à-une-case-du-tableau)
   * [Concaténation dans le tableau](#concaténation-dans-le-tableau)
 - [Chargement de fichiers de code au démarrage](#chargement-de-fichiers-de-code-au-démarrage)
@@ -209,6 +210,21 @@ cmd > print(array);
 coucou toi 1 2 6
 ```
 
+#### Taille d'un tableau
+
+On peut récupérer la taille d'un tableau
+
+```bash
+cmd > print(len([1,2,3,4]));
+
+4
+
+cmd > array = [1,2];
+cmd > print(len(array));
+
+2
+```
+
 #### Accès à une case du tableau
 
 On peut acceder à n'importe quel case du tableau pour en récupérer l'expression. Si l'index est hors de portée, une exception est levé.
@@ -322,3 +338,4 @@ cmd > fibo(10);
 34
 55
 ```
+

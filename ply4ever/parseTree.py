@@ -14,7 +14,8 @@ reserved = {
     'while': 'WHILE',
     'function': 'FUNCTION',
     'return': 'RETURN',
-    'load': 'LOAD'
+    'load': 'LOAD',
+    'len': 'LEN'
 }
 
 tokens = [
@@ -152,6 +153,12 @@ def p_array_element(p):
     r"""expression : ARRAY LHOOK NUMBER RHOOK
     | NAME LHOOK NUMBER RHOOK"""
     p[0] = ('access_array', p[1], p[3])
+
+
+def p_array_size(p):
+    r"""expression : LEN LPAREN NAME RPAREN
+    | LEN LPAREN ARRAY RPAREN"""
+    p[0] = ('len', p[3])
 
 
 def p_array_concat(p):

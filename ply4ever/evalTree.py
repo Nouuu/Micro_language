@@ -34,6 +34,8 @@ def evalExpr(t):
         return evalExpr(t[1]) == evalExpr(t[2])
     if t[0] == 'access_array':
         return eval_access_array(t[1], t[2])
+    if t[0] == 'len':
+        return eval_len_array(t[1])
     if t[0] == 'array':
         return t[1]
     if t[0] == 'param':
@@ -142,6 +144,17 @@ def eval_access_array(name, index):
         array = array[1]
         index -= 1
     return evalExpr(array[2])
+
+
+def eval_len_array(name):
+    global names
+
+    array = name[1] if type(name) is tuple else names[name]
+    size = 1
+    while type(array[1]) is tuple:
+        size += 1
+        array = array[1]
+    return size
 
 
 def eval_concat_array(name, expression):
